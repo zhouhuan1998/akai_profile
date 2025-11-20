@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akai's Profile</title>
+    <link rel="stylesheet" href="../src/assets/styles/akai-style.css">
+    <style>
+        * {
+            cursor: url("../src/assets/images/mouse.png"), 
+                    /* fallback：图片加载失败时显示的默认鼠标（如 pointer/auto） */
+                    pointer !important;
+            
+            /* 可选优化：限制图片尺寸（建议≤32x32px，过大可能被浏览器缩放） */
+            /* cursor 不支持直接设置尺寸，需提前将图片裁剪为合适大小 */
+        }
+        /* 额外的预览样式 */
+        .preview-section {
+            margin: 4rem 0;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: rgba(30, 58, 95, 0.1);
+        }
+        
+        .color-palette {
+            display: flex;
+            gap: 0.25rem;
+            margin: 1rem 0;
+            flex-wrap: nowrap;
+            justify-content: stretch;
+            align-items: center;
+        }
+        
+        .color-box {
+            flex: 1;
+            height: 80px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            line-height: 1.2;
+            min-width: 0;
+            padding: 0 0.25rem;
+        }
+        
+        .primary-dark { background: var(--primary-dark); color: white; }
+        .navy-blue { background: var(--navy-blue); color: white; }
+        .accent-red { background: var(--accent-red); color: white; }
+        .silver-gray { background: var(--silver-gray); color: black; }
+        .light-white { background: var(--dark-green); color: white; }
+        
+        .component-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .hero-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, var(--primary-darker), var(--navy-blue-dark));
+            border-radius: 16px;
+            margin-bottom: 3rem;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-red), var(--navy-blue-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px var(--shadow-color);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--silver-gray);
+            margin-bottom: 2rem;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px var(--shadow-color);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-red);
+        }
+        
+        .nav-demo {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .footer-demo {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+            color: var(--text-secondary);
+        }
+        
+        /* 图片展示区域 */
+        .image-showcase {
+            margin: 4rem 0;
+            text-align: center;
+        }
+        
+        /* 配色方案标题居中 */
+        .preview-section h2,
+        .preview-section .text-muted {
+            text-align: center;
+            margin: 0 auto 1rem;
+        }
+        
+        .preview-section h2 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .image-grid {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 1rem;
+            margin: 2rem 0;
+            justify-content: space-between;
+        }
+        
+        .image-card {
+            background: var(--primary-light);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px var(--shadow-color);
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .image-grid {
+                gap: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .image-grid {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            .image-card {
+                min-width: calc(50% - 0.5rem);
+                flex: 0 0 calc(50% - 0.5rem);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .image-grid {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .image-card {
+                min-width: 100%;
+                flex: 0 0 100%;
+            }
+        }
+        
+        .image-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px var(--shadow-color);
+        }
+        
+        .image-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        
+        .image-card-content {
+            padding: 1.5rem;
+        }
+        
+        .image-card h4 {
+            color: var(--light-white);
+            margin-bottom: 0.5rem;
+        }
+        
+        .image-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Banner区域 -->
+    <section class="banner-section">
+        <div class="banner-content fade-in-up">
+            <h1 class="banner-title">赤井秀一</h1>
+            <p class="banner-subtitle">Fear of death is worse than death itself</p>
+        </div>
+    </section>
+
+    <!-- 动态轮播图 -->
+    <div class="container">
+        <div id="dynamic-carousel" class="carousel-container">
+            <!-- 动态生成的轮播图片将插入这里 -->
+            <div class="carousel-controls">
+                <button class="carousel-control carousel-prev">‹</button>
+                <button class="carousel-control carousel-next">›</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- 配色方案展示 -->
+        <section class="preview-section" style="text-align: center;">
+            <h2>配色パレット</h2>
+            <p class="text-muted">赤井秀一の色彩構成</p>
+            <div class="color-palette">
+                <div class="color-box primary-dark">深炭黑<br>#1a1a1a</div>
+                <div class="color-box navy-blue">藏青蓝<br>#1e3a5f</div>
+                <div class="color-box accent-red">暗红色<br>#8b0000</div>
+                <div class="color-box light-white">墨绿色<br>#669933</div>
+                <div class="color-box silver-gray">银灰色<br>#c0c0c0</div>
+            </div>
+        </section>
+        
+        <!-- 图片展示区域 -->
+        <section class="image-showcase">
+            <h2>ナビゲーション</h2>
+            <div class="image-grid">
+                <div class="image-card">
+                    <img src="../src/assets/images/navigation/1.webp" alt="Official Poster">
+                    <div class="image-card-content">
+                        <h4>オフィシャルポスター</h4>
+                    </div>
+                </div>
+                <div class="image-card">
+                    <img src="../src/assets/images/navigation/2.jpg" alt="Fan Art">
+                    <div class="image-card-content">
+                        <h4>ファンアート</h4>
+                    </div>
+                </div>
+                <div class="image-card">
+                    <img src="../src/assets/images/navigation/3.jpeg" alt="Peripheral Info">
+                    <div class="image-card-content">
+                        <h4>周辺情報</h4>
+                    </div>
+                </div>
+                <div class="image-card">
+                    <img src="../src/assets/images/navigation/4.jpeg" alt="Free Discussion">
+                    <div class="image-card-content">
+                        <h4>自由に話し合う</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer-demo">
+        <p>&copy; 2024 赤井秀一テーマウェブサイト. All rights reserved.</p>
+        <p class="text-muted">Powered by Akai Style CSS</p>
+        <div class="nav-demo" style="justify-content: center; margin-top: 1rem;">
+            <a href="#" class="nav-link">プライバシー</a>
+            <a href="#" class="nav-link">利用規約</a>
+            <a href="#" class="nav-link">お問い合わせ</a>
+        </div>
+    </footer>
+
+    <script>
+        // 动态轮播图类
+        class DynamicCarousel {
+            constructor(containerId, imagePath) {
+                this.container = document.getElementById(containerId);
+                this.imagePath = imagePath;
+                this.currentSlide = 0;
+                this.images = [];
+                this.autoPlayInterval = null;
+                
+                this.init();
+            }
+            
+            async init() {
+                await this.loadImages();
+                this.render();
+                this.bindEvents();
+                this.startAutoPlay();
+            }
+            
+            async loadImages() {
+                // 定义图片列表（在实际项目中可以通过API获取）
+                this.images = [
+                    'loop-1.jpg',
+                    'loop-2.jpg', 
+                    'loop-3.jpg',
+                    'loop-4.jpg',
+                    'loop5.png'
+                ];
+                
+                console.log('Loaded images:', this.images);
+            }
+            
+            render() {
+                // 清空容器（保留控制按钮）
+                const controls = this.container.querySelector('.carousel-controls');
+                this.container.innerHTML = '';
+                
+                // 生成轮播图片
+                this.images.forEach((image, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = `carousel-slide ${index === 0 ? 'active' : ''}`;
+                    slide.style.backgroundImage = `url('${this.imagePath}/${image}')`;
+                    slide.dataset.index = index;
+                    
+                    this.container.appendChild(slide);
+                });
+                
+                // 添加指示器
+                const indicators = document.createElement('div');
+                indicators.className = 'carousel-indicators';
+                
+                this.images.forEach((_, index) => {
+                    const indicator = document.createElement('div');
+                    indicator.className = `carousel-indicator ${index === 0 ? 'active' : ''}`;
+                    indicator.dataset.slide = index;
+                    indicators.appendChild(indicator);
+                });
+                
+                this.container.appendChild(indicators);
+                this.container.appendChild(controls);
+                
+                // 重新获取元素引用
+                this.slides = this.container.querySelectorAll('.carousel-slide');
+                this.indicators = this.container.querySelectorAll('.carousel-indicator');
+                this.prevBtn = this.container.querySelector('.carousel-prev');
+                this.nextBtn = this.container.querySelector('.carousel-next');
+            }
+            
+            bindEvents() {
+                this.prevBtn.addEventListener('click', () => this.prevSlide());
+                this.nextBtn.addEventListener('click', () => this.nextSlide());
+                
+                this.indicators.forEach((indicator, index) => {
+                    indicator.addEventListener('click', () => this.goToSlide(index));
+                });
+                
+                // 鼠标悬停时暂停自动播放
+                this.container.addEventListener('mouseenter', () => this.stopAutoPlay());
+                this.container.addEventListener('mouseleave', () => this.startAutoPlay());
+            }
+            
+            showSlide(index) {
+                this.slides.forEach(slide => slide.classList.remove('active'));
+                this.indicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                this.slides[index].classList.add('active');
+                this.indicators[index].classList.add('active');
+                
+                this.currentSlide = index;
+            }
+            
+            nextSlide() {
+                const nextIndex = (this.currentSlide + 1) % this.images.length;
+                this.showSlide(nextIndex);
+            }
+            
+            prevSlide() {
+                const prevIndex = (this.currentSlide - 1 + this.images.length) % this.images.length;
+                this.showSlide(prevIndex);
+            }
+            
+            goToSlide(index) {
+                this.showSlide(index);
+            }
+            
+            startAutoPlay() {
+                this.stopAutoPlay(); // 先停止之前的定时器
+                this.autoPlayInterval = setInterval(() => {
+                    this.nextSlide();
+                }, 4000); // 4秒切换一次
+            }
+            
+            stopAutoPlay() {
+                if (this.autoPlayInterval) {
+                    clearInterval(this.autoPlayInterval);
+                    this.autoPlayInterval = null;
+                }
+            }
+            
+            // 动态添加图片的方法
+            addImage(imageName) {
+                this.images.push(imageName);
+                this.render();
+                this.bindEvents();
+            }
+            
+            // 动态删除图片的方法
+            removeImage(index) {
+                if (this.images.length > 1) {
+                    this.images.splice(index, 1);
+                    if (this.currentSlide >= this.images.length) {
+                        this.currentSlide = this.images.length - 1;
+                    }
+                    this.render();
+                    this.bindEvents();
+                }
+            }
+        }
+        
+        // 为所有按钮添加点击效果
+        function addRippleEffect() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // 创建波纹效果
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        background: rgba(255, 255, 255, 0.3);
+                        border-radius: 50%;
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        pointer-events: none;
+                    `;
+                    
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+        }
+        
+        // 导航链接点击效果
+        function addNavLinkEffects() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+        
+        // 图片卡片悬停效果
+        function addImageCardEffects() {
+            const imageCards = document.querySelectorAll('.image-card');
+            imageCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化动态轮播图
+            const carousel = new DynamicCarousel('dynamic-carousel', '../src/assets/images/loop');
+            
+            // 添加各种交互效果
+            addRippleEffect();
+            addNavLinkEffects();
+            addImageCardEffects();
+            
+            // 添加滚动动画
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-up');
+                    }
+                });
+            }, observerOptions);
+            
+            // 观察所有需要动画的元素
+            document.querySelectorAll('.preview-section, .image-card, .feature-card').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // 测试动态添加/删除图片的功能（可选）
+            // 示例：carousel.addImage('new-image.jpg');
+            // 示例：carousel.removeImage(0);
+        });
+        
+        // 添加波纹动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

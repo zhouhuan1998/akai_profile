@@ -1,0 +1,592 @@
+/* 赤井秀一主题配色方案 */
+:root {
+  /* 主色调 - 深炭黑 */
+  --primary-dark: #1a1a1a;
+  --primary-darker: #0d0d0d;
+  --primary-light: #2d2d2d;
+  
+  /* 藏青蓝 */
+  --navy-blue: #1e3a5f;
+  --navy-blue-light: #2c4a73;
+  --navy-blue-dark: #152a45;
+  
+  /* 辅助色 - 暗红 */
+  --accent-red: #8b0000;
+  --accent-red-light: #a00000;
+  --accent-red-dark: #660000;
+  
+  /* 中性色 */
+  --silver-gray: #c0c0c0;
+  --silver-gray-light: #d3d3d3;
+  --silver-gray-dark: #a8a8a8;
+  --light-white: #f5f5f5;
+  --pure-white: #ffffff;
+  --dark-green: #4d6337;
+  
+  /* 文字颜色 */
+  --text-primary: #e0e0e0;
+  --text-secondary: #b0b0b0;
+  --text-accent: #ff6b6b;
+  
+  /* 边框和阴影 */
+  --border-color: #333333;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --glow-color: rgba(30, 58, 95, 0.3);
+  
+  /* 图片路径 */
+  --banner-image: url('../images/banner.png');
+  --carousel-1: url('../images/loop-1.webp');
+  --carousel-2: url('../images/loop-2.jpg');
+  --carousel-3: url('../images/loop-3.jpg');
+  --mouse-cursor: url('../images/mouse.png'), auto;
+  --mouse-hover: url('../images/mouse.png'), pointer;
+}
+
+/* 深色模式媒体查询 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-dark: #0f0f0f;
+    --primary-darker: #050505;
+    --primary-light: #1a1a1a;
+    --navy-blue: #1a334d;
+    --navy-blue-light: #254060;
+    --navy-blue-dark: #0f1f2f;
+    --text-primary: #d0d0d0;
+    --text-secondary: #909090;
+    --border-color: #2a2a2a;
+  }
+}
+
+/* 全局样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, var(--primary-darker) 0%, var(--primary-dark) 100%);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  background-attachment: fixed;
+  cursor: var(--mouse-cursor);
+}
+
+/* 鼠标图标样式 - 强制全站应用 */
+* {
+  cursor: url('../images/mouse.png') 16 16, auto !important;
+}
+
+html, body {
+  cursor: url('../images/mouse.png') 16 16, auto !important;
+}
+
+/* 覆盖所有可能的元素 */
+body * {
+  cursor: url('../images/mouse.png') 16 16, auto !important;
+}
+
+/* 确保所有交互元素 */
+button, a, input, select, textarea, label, .btn, .nav-link, .carousel-control, .carousel-indicator {
+  cursor: url('../images/mouse.png') 16 16, auto !important;
+}
+
+/* 强制覆盖所有状态 */
+*:hover, *:focus, *:active {
+  cursor: url('../images/mouse.png') 16 16, auto !important;
+}
+
+/* 内联样式覆盖 */
+[style*="cursor"] {
+  cursor: url('../images/mouse.png') 16 16, auto !important;
+}
+
+/* Banner区域 */
+.banner-section {
+  position: relative;
+  height: auto;
+  min-height: 400px;
+  background: var(--banner-image) center/contain no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 4rem 0;
+}
+
+.banner-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(26, 26, 26, 0.8) 0%, 
+    rgba(30, 58, 95, 0.6) 50%, 
+    rgba(139, 0, 0, 0.4) 100%);
+  z-index: 1;
+}
+
+.banner-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: var(--light-white);
+  max-width: 800px;
+  padding: 2rem;
+  margin-top: 200px; /* 根据图片高度调整 */
+}
+
+.banner-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 8px var(--shadow-color);
+  background: linear-gradient(90deg, var(--light-white), var(--silver-gray));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.banner-subtitle {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: var(--silver-gray);
+  text-shadow: 0 2px 4px var(--shadow-color);
+  font-style: italic;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.banner-cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* 轮播图 */
+.carousel-container {
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  overflow: hidden;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: 0 20px 60px var(--shadow-color);
+}
+
+.carousel-slide {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+}
+
+.carousel-controls {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 3;
+}
+
+.carousel-control {
+  background: rgba(30, 58, 95, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: var(--light-white);
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+.carousel-control:hover {
+  background: var(--accent-red);
+  border-color: var(--light-white);
+  transform: scale(1.1);
+}
+
+.carousel-indicators {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+  z-index: 3;
+}
+
+.carousel-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-indicator.active {
+  background: var(--accent-red);
+  transform: scale(1.2);
+}
+
+/* 标题样式 */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px var(--shadow-color);
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: var(--light-white);
+  border-bottom: 3px solid var(--navy-blue);
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+h2 {
+  font-size: 2rem;
+  color: var(--navy-blue-light);
+}
+
+h3 {
+  font-size: 1.5rem;
+  color: var(--silver-gray);
+}
+
+/* 按钮样式 */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, var(--navy-blue), var(--navy-blue-light));
+  color: var(--light-white);
+  box-shadow: 0 4px 15px var(--glow-color);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, var(--navy-blue-light), var(--navy-blue));
+  box-shadow: 0 6px 20px rgba(30, 58, 95, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-accent {
+  background: linear-gradient(45deg, var(--accent-red), var(--accent-red-light));
+  color: var(--light-white);
+  box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+}
+
+.btn-accent:hover {
+  background: linear-gradient(45deg, var(--accent-red-light), var(--accent-red));
+  box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--silver-gray);
+  border: 2px solid var(--silver-gray);
+}
+
+.btn-secondary:hover {
+  background: var(--silver-gray);
+  color: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* 链接样式 */
+a {
+  color: var(--navy-blue-light);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+a:hover {
+  color: var(--accent-red-light);
+  text-shadow: 0 0 8px rgba(255, 107, 107, 0.3);
+}
+
+a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-red), var(--navy-blue-light));
+  transition: width 0.3s ease;
+}
+
+a:hover::after {
+  width: 100%;
+}
+
+/* 特殊链接样式 */
+.nav-link {
+  color: var(--text-primary);
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  background: rgba(30, 58, 95, 0.2);
+  color: var(--light-white);
+}
+
+.nav-link.active {
+  background: var(--navy-blue);
+  color: var(--light-white);
+}
+
+/* 卡片样式 */
+.card {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px var(--shadow-color);
+  backdrop-filter: blur(10px);
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 12px 40px var(--shadow-color);
+  transform: translateY(-4px);
+}
+
+/* 文本样式 */
+.text-accent {
+  color: var(--text-accent);
+  font-weight: 600;
+}
+
+.text-muted {
+  color: var(--text-secondary);
+}
+
+.text-highlight {
+  background: linear-gradient(90deg, var(--accent-red), var(--navy-blue-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .banner-title {
+    font-size: 2.5rem;
+  }
+  
+  .banner-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .carousel-container {
+    height: 60vh;
+  }
+  
+  .carousel-title {
+    font-size: 2rem;
+  }
+  
+  .carousel-description {
+    font-size: 1rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+  
+  .card {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .carousel-control {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-cta {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .carousel-content {
+    padding: 2rem 1rem;
+  }
+  
+  .carousel-title {
+    font-size: 1.5rem;
+  }
+  
+  .carousel-controls {
+    padding: 0 1rem;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.8s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.8s ease-out;
+}
+
+.zoom-in {
+  animation: zoomIn 0.6s ease-out;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--primary-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--navy-blue);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--navy-blue-light);
+}
+
+/* 辅助类 */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-1 { margin-top: 1rem; }
+.mt-2 { margin-top: 2rem; }
+.mt-3 { margin-top: 3rem; }
+.mb-1 { margin-bottom: 1rem; }
+.mb-2 { margin-bottom: 2rem; }
+.mb-3 { margin-bottom: 3rem; }
+
+/* 波纹效果 */
+@keyframes ripple {
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+  pointer-events: none;
+}
