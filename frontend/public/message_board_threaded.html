@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akai Fans Message Board</title>
+    <link rel="stylesheet" href="../src/assets/styles/akai-style.css">
+    <style>
+        /* 楼中楼留言板专用样式 */
+        .message-board-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .board-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .board-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--accent-red), var(--navy-blue-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .board-subtitle {
+            color: var(--silver-gray);
+            font-size: 1.1rem;
+        }
+        
+        /* 留言表单区域 */
+        .message-form-section {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px var(--shadow-color);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--light-white);
+            font-weight: 500;
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--primary-dark);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--navy-blue-light);
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.3);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        /* 留言列表区域 - 楼中楼样式 */
+        .message-list-section {
+            margin-top: 2rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--light-white);
+        }
+        
+        .message-count {
+            background: var(--accent-red);
+            color: var(--light-white);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* 主留言样式 */
+        .message-item {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .message-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px var(--shadow-color);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .message-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--navy-blue), var(--navy-blue-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-white);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .author-name {
+            color: var(--light-white);
+            font-weight: 600;
+        }
+        
+        .message-time {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .message-content {
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .message-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .action-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .action-btn:hover {
+            background: var(--navy-blue);
+            color: var(--light-white);
+            border-color: var(--navy-blue);
+        }
+        
+        .action-btn.liked {
+            background: var(--accent-red);
+            color: var(--light-white);
+            border-color: var(--accent-red);
+        }
+        
+        .delete-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .delete-btn:hover {
+            color: var(--accent-red);
+        }
+        
+        /* 楼中楼回复样式 */
+        .reply-container {
+            margin-top: 1rem;
+            padding-left: 2rem;
+            border-left: 3px solid var(--navy-blue);
+        }
+        
+        .reply-item {
+            background: linear-gradient(135deg, rgba(30, 58, 95, 0.1), rgba(30, 58, 95, 0.05));
+            border: 1px solid rgba(30, 58, 95, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            position: relative;
+        }
+        
+        .reply-item::before {
+            content: '';
+            position: absolute;
+            left: -0.5rem;
+            top: 1rem;
+            width: 0;
+            height: 0;
+            border-top: 0.5rem solid transparent;
+            border-bottom: 0.5rem solid transparent;
+            border-right: 0.5rem solid rgba(30, 58, 95, 0.3);
+        }
+        
+        .reply-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .reply-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .reply-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--silver-gray), var(--silver-gray-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .reply-author-name {
+            color: var(--silver-gray);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .reply-time {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+        
+        .reply-content {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-left: 2.5rem;
+        }
+        
+        .reply-content .mention {
+            color: var(--navy-blue-light);
+            font-weight: 500;
+        }
+        
+        .reply-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: 2.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .reply-action-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reply-action-btn:hover {
+            background: var(--navy-blue);
+            color: var(--light-white);
+            border-color: var(--navy-blue);
+        }
+        
+        /* 回复表单 */
+        .reply-form {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(30, 58, 95, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(30, 58, 95, 0.2);
+            display: none;
+        }
+        
+        .reply-form.active {
+            display: block;
+        }
+        
+        .reply-form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+        
+        .reply-form-title {
+            color: var(--silver-gray);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .reply-form-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .reply-form-close:hover {
+            color: var(--accent-red);
+        }
+        
+        .reply-form-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--primary-dark);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            resize: vertical;
+            margin-bottom: 0.75rem;
+        }
+        
+        .reply-form-textarea:focus {
+            outline: none;
+            border-color: var(--navy-blue-light);
+            box-shadow: 0 0 0 2px rgba(30, 58, 95, 0.3);
+        }
+        
+        .reply-form-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        
+        .reply-form-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .reply-form-btn.cancel {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .reply-form-btn.cancel:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .reply-form-btn.submit {
+            background: var(--navy-blue);
+            color: var(--light-white);
+        }
+        
+        .reply-form-btn.submit:hover {
+            background: var(--navy-blue-light);
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .empty-text {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .empty-subtext {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        /* 加载状态 */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--navy-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .message-board-container {
+                margin: 1rem;
+                padding: 0;
+            }
+            
+            .board-title {
+                font-size: 2rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .message-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .message-actions {
+                flex-wrap: wrap;
+            }
+            
+            .reply-container {
+                padding-left: 1rem;
+            }
+            
+            .reply-content,
+            .reply-actions {
+                margin-left: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .message-form-section,
+            .message-item {
+                padding: 1rem;
+            }
+            
+            .board-header {
+                padding: 1.5rem;
+            }
+            
+            .reply-form {
+                padding: 0.75rem;
+            }
+        }
+        
+        /* 动画效果 */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 新留言高亮 */
+        .message-item.new {
+            animation: highlight 2s ease-out;
+        }
+        
+        @keyframes highlight {
+            0% {
+                background: linear-gradient(135deg, var(--accent-red), var(--accent-red-light));
+                transform: scale(1.02);
+            }
+            100% {
+                background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+                transform: scale(1);
+            }
+        }
+        
+        /* 回到顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--navy-blue);
+            color: var(--light-white);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: var(--accent-red);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow-color);
+        }
+        
+        /* 通知样式 */
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            z-index: 1001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.success {
+            background: var(--accent-red);
+            color: var(--light-white);
+        }
+        
+        .notification.info {
+            background: var(--navy-blue);
+            color: var(--light-white);
+        }
+    </style>
+</head>
+<body>
+    <div class="message-board-container">
+        <!-- 页面头部 -->
+        <div class="board-header fade-in">
+            <h1 class="board-title">Akai Fans' Message Board</h1>
+            <p class="board-subtitle">Leave a comment on the message board to share your thoughts with Akai fans!</p>
+        </div>
+
+        <!-- 留言列表 -->
+        <div class="message-list-section">
+            <div class="section-header">
+                <h2 class="section-title">留言列表</h2>
+                <span id="messageCount" class="message-count">0</span>
+            </div>
+            
+            <div id="messageList" class="message-list">
+                <div class="empty-state">
+                    <div class="empty-icon">💬</div>
+                    <div class="empty-text">还没有留言</div>
+                    <div class="empty-subtext">成为第一个留言的人吧！</div>
+                </div>
+            </div>
+            
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <div>加载中...</div>
+            </div>
+        </div>
+
+        <!-- 留言表单 -->
+        <div class="message-form-section fade-in">
+            <form id="messageForm">
+                <div class="form-group">
+                    <label for="userName" class="form-label">昵称</label>
+                    <input type="text" id="userName" class="form-input" placeholder="请输入你的昵称" maxlength="20" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="messageContent" class="form-label">留言内容</label>
+                    <textarea id="messageContent" class="form-textarea" placeholder="分享你的想法..." maxlength="500" required></textarea>
+                    <div style="text-align: right; margin-top: 0.5rem;">
+                        <span id="charCount" class="text-muted">0/500</span>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="clearBtn" class="btn btn-secondary">清空</button>
+                    <button type="submit" id="submitBtn" class="btn btn-primary">发表留言</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="back-to-top">↑</button>
+
+    <script>
+        class ThreadedMessageBoard {
+            constructor() {
+                this.messages = JSON.parse(localStorage.getItem('akaiThreadedMessages')) || [];
+                this.currentPage = 1;
+                this.messagesPerPage = 10;
+                this.replyingTo = null;
+                this.editingReply = null;
+                this.init();
+            }
+            
+            init() {
+                this.bindEvents();
+                this.renderMessages();
+                this.updateMessageCount();
+                this.setupBackToTop();
+                this.setupCharacterCount();
+            }
+            
+            bindEvents() {
+                // 表单提交
+                document.getElementById('messageForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.submitMessage();
+                });
+                
+                // 清空按钮
+                document.getElementById('clearBtn').addEventListener('click', () => {
+                    this.clearForm();
+                });
+                
+                // 回到顶部
+                document.getElementById('backToTop').addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+                
+                // 滚动事件
+                window.addEventListener('scroll', () => {
+                    this.handleScroll();
+                });
+            }
+            
+            setupCharacterCount() {
+                const textarea = document.getElementById('messageContent');
+                const charCount = document.getElementById('charCount');
+                
+                textarea.addEventListener('input', () => {
+                    const count = textarea.value.length;
+                    charCount.textContent = `${count}/500`;
+                    
+                    if (count > 450) {
+                        charCount.style.color = 'var(--accent-red)';
+                    } else {
+                        charCount.style.color = 'var(--text-secondary)';
+                    }
+                });
+            }
+            
+            setupBackToTop() {
+                const backToTopBtn = document.getElementById('backToTop');
+                
+                window.addEventListener('scroll', () => {
+                    if (window.pageYOffset > 300) {
+                        backToTopBtn.classList.add('visible');
+                    } else {
+                        backToTopBtn.classList.remove('visible');
+                    }
+                });
+            }
+            
+            handleScroll() {
+                // 可以在这里添加无限滚动逻辑
+            }
+            
+            submitMessage() {
+                const userNameInput = document.getElementById('userName');
+                const userEmailInput = document.getElementById('userEmail');
+                const messageContentInput = document.getElementById('messageContent');
+                
+                if (!userNameInput || !messageContentInput) {
+                    alert('表单元素未找到，请刷新页面重试');
+                    return;
+                }
+                
+                const userName = userNameInput.value.trim();
+                const userEmail = userEmailInput ? userEmailInput.value.trim() : '';
+                const messageContent = messageContentInput.value.trim();
+                
+                if (!userName || !messageContent) {
+                    alert('请填写昵称和留言内容');
+                    return;
+                }
+                
+                if (messageContent.length > 500) {
+                    alert('留言内容不能超过500字');
+                    return;
+                }
+                
+                const message = {
+                    id: Date.now(),
+                    userName: userName,
+                    userEmail: userEmail,
+                    content: messageContent,
+                    timestamp: new Date().toISOString(),
+                    likes: 0,
+                    liked: false,
+                    replies: [],
+                    replyCount: 0
+                };
+                
+                this.messages.unshift(message);
+                this.justSubmitted = true;
+                this.saveMessages();
+                this.renderMessages();
+                this.updateMessageCount();
+                this.clearForm();
+                
+                // 重置标记
+                setTimeout(() => {
+                    this.justSubmitted = false;
+                }, 2000);
+                
+                this.showNotification('留言发表成功！', 'success');
+            }
+            
+            submitReply(parentId) {
+                const replyForm = document.querySelector(`#reply-form-${parentId}`);
+                const replyTextarea = replyForm.querySelector('.reply-form-textarea');
+                const replyContent = replyTextarea.value.trim();
+                
+                if (!replyContent) {
+                    alert('请输入回复内容');
+                    return;
+                }
+                
+                if (replyContent.length > 300) {
+                    alert('回复内容不能超过300字');
+                    return;
+                }
+                
+                const parentMessage = this.messages.find(msg => msg.id === parentId);
+                if (!parentMessage) return;
+                
+                const reply = {
+                    id: Date.now(),
+                    parentId: parentId,
+                    userName: document.getElementById('userName').value.trim() || '匿名用户',
+                    content: replyContent,
+                    timestamp: new Date().toISOString(),
+                    likes: 0,
+                    liked: false
+                };
+                
+                parentMessage.replies.push(reply);
+                parentMessage.replyCount = parentMessage.replies.length;
+                this.saveMessages();
+                this.renderMessages();
+                this.hideReplyForm(parentId);
+                
+                this.showNotification('回复发表成功！', 'success');
+            }
+            
+            showReplyForm(messageId) {
+                // 隐藏所有其他回复表单
+                document.querySelectorAll('.reply-form').forEach(form => {
+                    form.classList.remove('active');
+                });
+                
+                // 显示目标回复表单
+                const replyForm = document.querySelector(`#reply-form-${messageId}`);
+                if (replyForm) {
+                    replyForm.classList.add('active');
+                    replyForm.querySelector('.reply-form-textarea').focus();
+                }
+            }
+            
+            hideReplyForm(messageId) {
+                const replyForm = document.querySelector(`#reply-form-${messageId}`);
+                if (replyForm) {
+                    replyForm.classList.remove('active');
+                    replyForm.querySelector('.reply-form-textarea').value = '';
+                }
+            }
+            
+            toggleReplies(messageId) {
+                const repliesContainer = document.querySelector(`#replies-${messageId}`);
+                const toggleBtn = document.querySelector(`#toggle-replies-${messageId}`);
+                
+                if (repliesContainer.style.display === 'none') {
+                    repliesContainer.style.display = 'block';
+                    toggleBtn.innerHTML = '<span>🔼</span><span>收起回复</span>';
+                } else {
+                    repliesContainer.style.display = 'none';
+                    toggleBtn.innerHTML = '<span>🔽</span><span>展开回复</span>';
+                }
+            }
+            
+            clearForm() {
+                const userNameInput = document.getElementById('userName');
+                const userEmailInput = document.getElementById('userEmail');
+                const messageContentInput = document.getElementById('messageContent');
+                const charCountSpan = document.getElementById('charCount');
+                
+                if (userNameInput) userNameInput.value = '';
+                if (userEmailInput) userEmailInput.value = '';
+                if (messageContentInput) messageContentInput.value = '';
+                if (charCountSpan) charCountSpan.textContent = '0/500';
+            }
+            
+            deleteMessage(id) {
+                if (confirm('确定要删除这条留言吗？删除后所有回复也会被删除。')) {
+                    this.messages = this.messages.filter(msg => msg.id !== id);
+                    this.saveMessages();
+                    this.renderMessages();
+                    this.updateMessageCount();
+                    this.showNotification('留言已删除', 'info');
+                }
+            }
+            
+            deleteReply(messageId, replyId) {
+                if (confirm('确定要删除这条回复吗？')) {
+                    const message = this.messages.find(msg => msg.id === messageId);
+                    if (message) {
+                        message.replies = message.replies.filter(reply => reply.id !== replyId);
+                        message.replyCount = message.replies.length;
+                        this.saveMessages();
+                        this.renderMessages();
+                        this.showNotification('回复已删除', 'info');
+                    }
+                }
+            }
+            
+            toggleLike(id, isReply = false, messageId = null) {
+                if (isReply) {
+                    const message = this.messages.find(msg => msg.id === messageId);
+                    if (message) {
+                        const reply = message.replies.find(r => r.id === id);
+                        if (reply) {
+                            if (reply.liked) {
+                                reply.likes--;
+                                reply.liked = false;
+                            } else {
+                                reply.likes++;
+                                reply.liked = true;
+                            }
+                        }
+                    }
+                } else {
+                    const message = this.messages.find(msg => msg.id === id);
+                    if (message) {
+                        if (message.liked) {
+                            message.likes--;
+                            message.liked = false;
+                        } else {
+                            message.likes++;
+                            message.liked = true;
+                        }
+                    }
+                }
+                this.saveMessages();
+                this.renderMessages();
+            }
+            
+            renderMessages() {
+                const messageList = document.getElementById('messageList');
+                
+                if (this.messages.length === 0) {
+                    messageList.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">💬</div>
+                            <div class="empty-text">还没有留言</div>
+                            <div class="empty-subtext">成为第一个留言的人吧！</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const messagesHTML = this.messages.map((message, index) => {
+                    const isNew = index === 0 && this.justSubmitted;
+                    const timeAgo = this.formatTimeAgo(message.timestamp);
+                    const avatar = this.generateAvatar(message.userName);
+                    const hasReplies = message.replies && message.replies.length > 0;
+                    
+                    let repliesHTML = '';
+                    if (hasReplies) {
+                        repliesHTML = message.replies.map(reply => {
+                            const replyTimeAgo = this.formatTimeAgo(reply.timestamp);
+                            const replyAvatar = this.generateAvatar(reply.userName);
+                            
+                            return `
+                                <div class="reply-item" data-reply-id="${reply.id}">
+                                    <button class="delete-btn" onclick="messageBoard.deleteReply(${message.id}, ${reply.id})" title="删除回复" style="font-size: 1rem;">×</button>
+                                    
+                                    <div class="reply-header">
+                                        <div class="reply-author">
+                                            <div class="reply-avatar">${replyAvatar}</div>
+                                            <div class="reply-author-name">${this.escapeHtml(reply.userName)}</div>
+                                        </div>
+                                        <div class="reply-time">${replyTimeAgo}</div>
+                                    </div>
+                                    
+                                    <div class="reply-content">
+                                        ${this.formatReplyContent(reply.content)}
+                                    </div>
+                                    
+                                    <div class="reply-actions">
+                                        <button class="reply-action-btn ${reply.liked ? 'liked' : ''}" onclick="messageBoard.toggleLike(${reply.id}, true, ${message.id})" title="点赞">
+                                            ${reply.liked ? '❤️' : '🤍'} ${reply.likes}
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                    
+                    return `
+                        <div class="message-item ${isNew ? 'new' : ''} fade-in" data-id="${message.id}">
+                            <button class="delete-btn" onclick="messageBoard.deleteMessage(${message.id})" title="删除">×</button>
+                            
+                            <div class="message-header">
+                                <div class="message-author">
+                                    <div class="author-avatar">${avatar}</div>
+                                    <div class="author-name">${this.escapeHtml(message.userName)}</div>
+                                </div>
+                                <div class="message-time">${timeAgo}</div>
+                            </div>
+                            
+                            <div class="message-content">
+                                ${this.escapeHtml(message.content)}
+                            </div>
+                            
+                            <div class="message-actions">
+                                <button class="action-btn ${message.liked ? 'liked' : ''}" onclick="messageBoard.toggleLike(${message.id})" title="点赞">
+                                    <span>${message.liked ? '❤️' : '🤍'}</span>
+                                    <span>${message.likes}</span>
+                                </button>
+                                <button class="action-btn" onclick="messageBoard.showReplyForm(${message.id})" title="回复">
+                                    <span>💬</span>
+                                    <span>回复</span>
+                                </button>
+                                ${hasReplies ? `
+                                <button class="action-btn" onclick="messageBoard.toggleReplies(${message.id})" id="toggle-replies-${message.id}" title="展开/收起回复">
+                                    <span>🔽</span>
+                                    <span>展开回复 (${message.replyCount})</span>
+                                </button>
+                                ` : ''}
+                            </div>
+                            
+                            ${hasReplies ? `
+                            <div class="reply-container" id="replies-${message.id}" style="display: none;">
+                                ${repliesHTML}
+                            </div>
+                            ` : ''}
+                            
+                            <div class="reply-form" id="reply-form-${message.id}">
+                                <div class="reply-form-header">
+                                    <div class="reply-form-title">回复留言</div>
+                                    <button class="reply-form-close" onclick="messageBoard.hideReplyForm(${message.id})">×</button>
+                                </div>
+                                <textarea class="reply-form-textarea" placeholder="写下你的回复..." maxlength="300"></textarea>
+                                <div style="text-align: right; margin-bottom: 0.5rem;">
+                                    <span class="text-muted reply-char-count">0/300</span>
+                                </div>
+                                <div class="reply-form-actions">
+                                    <button class="reply-form-btn cancel" onclick="messageBoard.hideReplyForm(${message.id})">取消</button>
+                                    <button class="reply-form-btn submit" onclick="messageBoard.submitReply(${message.id})">发表回复</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                messageList.innerHTML = messagesHTML;
+                
+                // 绑定回复表单的字符计数
+                this.messages.forEach(message => {
+                    const replyTextarea = document.querySelector(`#reply-form-${message.id} .reply-form-textarea`);
+                    const charCount = document.querySelector(`#reply-form-${message.id} .reply-char-count`);
+                    
+                    if (replyTextarea && charCount) {
+                        replyTextarea.addEventListener('input', () => {
+                            const count = replyTextarea.value.length;
+                            charCount.textContent = `${count}/300`;
+                            
+                            if (count > 270) {
+                                charCount.style.color = 'var(--accent-red)';
+                            } else {
+                                charCount.style.color = 'var(--text-secondary)';
+                            }
+                        });
+                    }
+                });
+            }
+            
+            updateMessageCount() {
+                const totalCount = this.messages.reduce((count, msg) => {
+                    return count + 1 + (msg.replies ? msg.replies.length : 0);
+                }, 0);
+                document.getElementById('messageCount').textContent = totalCount;
+            }
+            
+            formatTimeAgo(timestamp) {
+                const now = new Date();
+                const messageTime = new Date(timestamp);
+                const diffMs = now - messageTime;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+                
+                if (diffMins < 1) return '刚刚';
+                if (diffMins < 60) return `${diffMins}分钟前`;
+                if (diffHours < 24) return `${diffHours}小时前`;
+                if (diffDays < 7) return `${diffDays}天前`;
+                
+                return messageTime.toLocaleDateString('zh-CN');
+            }
+            
+            formatReplyContent(content) {
+                // 处理@提及
+                return content.replace(/@(\w+)/g, '<span class="mention">@$1</span>');
+            }
+            
+            generateAvatar(name) {
+                return name.charAt(0).toUpperCase();
+            }
+            
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            saveMessages() {
+                localStorage.setItem('akaiThreadedMessages', JSON.stringify(this.messages));
+            }
+            
+            showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type} fade-in`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // 显示动画
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(0)';
+                }, 100);
+                
+                // 自动隐藏
+                setTimeout(() => {
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        if (document.body.contains(notification)) {
+                            document.body.removeChild(notification);
+                        }
+                    }, 300);
+                }, 3000);
+            }
+        }
+        
+        // 初始化楼中楼留言板
+        const messageBoard = new ThreadedMessageBoard();
+        
+        // 添加一些示例数据（仅在首次访问时）
+        if (localStorage.getItem('akaiThreadedMessages') === null) {
+            const sampleMessages = [
+                {
+                    id: 1,
+                    userName: '赤井粉丝',
+                    userEmail: '',
+                    content: '赤井秀一真的太帅了！冷静沉着的性格让人印象深刻，特别是他的狙击技术简直无敌！',
+                    timestamp: new Date(Date.now() - 3600000).toISOString(),
+                    likes: 5,
+                    liked: false,
+                    replies: [
+                        {
+                            id: 101,
+                            parentId: 1,
+                            userName: '名侦探',
+                            content: '@赤井粉丝 同感！他的冷静判断力在关键时刻总是能起到决定性作用',
+                            timestamp: new Date(Date.now() - 1800000).toISOString(),
+                            likes: 2,
+                            liked: false
+                        },
+                        {
+                            id: 102,
+                            parentId: 1,
+                            userName: '狙击爱好者',
+                            content: '@赤井粉丝 确实，700码的距离都能精准命中，太厉害了！',
+                            timestamp: new Date(Date.now() - 900000).toISOString(),
+                            likes: 3,
+                            liked: false
+                        }
+                    ],
+                    replyCount: 2
+                },
+                {
+                    id: 2,
+                    userName: '推理迷',
+                    userEmail: '',
+                    content: '每次看到他出场都很激动，那种神秘感和强大的气场真的让人着迷。',
+                    timestamp: new Date(Date.now() - 7200000).toISOString(),
+                    likes: 3,
+                    liked: false,
+                    replies: [],
+                    replyCount: 0
+                }
+            ];
+            messageBoard.messages = sampleMessages;
+            messageBoard.saveMessages();
+            messageBoard.renderMessages();
+            messageBoard.updateMessageCount();
+        }
+    </script>
+</body>
+</html>
