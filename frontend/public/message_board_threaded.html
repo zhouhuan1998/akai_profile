@@ -1121,15 +1121,8 @@
         // 初始化楼中楼留言板
         const messageBoard = new ThreadedMessageBoard();
         
-        // 添加一些示例数据（仅在首次访问时）
-        if (localStorage.getItem('akaiThreadedMessages') === null) {
-            const sampleMessages = [
-            ];
-            messageBoard.messages = sampleMessages;
-            messageBoard.saveMessages();
-            messageBoard.renderMessages();
-            messageBoard.updateMessageCount();
-        }
+        // 完全空状态，不加载任何示例数据
+        // 留言板初始状态为空，等待用户发表第一条留言
     </script>
 </body>
 </html>
