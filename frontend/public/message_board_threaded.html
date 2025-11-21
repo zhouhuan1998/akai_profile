@@ -1124,47 +1124,6 @@
         // 添加一些示例数据（仅在首次访问时）
         if (localStorage.getItem('akaiThreadedMessages') === null) {
             const sampleMessages = [
-                {
-                    id: 1,
-                    userName: '赤井粉丝',
-                    userEmail: '',
-                    content: '赤井秀一真的太帅了！冷静沉着的性格让人印象深刻，特别是他的狙击技术简直无敌！',
-                    timestamp: new Date(Date.now() - 3600000).toISOString(),
-                    likes: 5,
-                    liked: false,
-                    replies: [
-                        {
-                            id: 101,
-                            parentId: 1,
-                            userName: '名侦探',
-                            content: '@赤井粉丝 同感！他的冷静判断力在关键时刻总是能起到决定性作用',
-                            timestamp: new Date(Date.now() - 1800000).toISOString(),
-                            likes: 2,
-                            liked: false
-                        },
-                        {
-                            id: 102,
-                            parentId: 1,
-                            userName: '狙击爱好者',
-                            content: '@赤井粉丝 确实，700码的距离都能精准命中，太厉害了！',
-                            timestamp: new Date(Date.now() - 900000).toISOString(),
-                            likes: 3,
-                            liked: false
-                        }
-                    ],
-                    replyCount: 2
-                },
-                {
-                    id: 2,
-                    userName: '推理迷',
-                    userEmail: '',
-                    content: '每次看到他出场都很激动，那种神秘感和强大的气场真的让人着迷。',
-                    timestamp: new Date(Date.now() - 7200000).toISOString(),
-                    likes: 3,
-                    liked: false,
-                    replies: [],
-                    replyCount: 0
-                }
             ];
             messageBoard.messages = sampleMessages;
             messageBoard.saveMessages();
